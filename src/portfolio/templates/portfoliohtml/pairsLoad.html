@@ -1,0 +1,112 @@
+{% extends 'portfoliohtml/base.html' %}
+
+    {% block header %}
+    {% endblock %}
+
+
+{% block content %}
+
+<script src="https://d3js.org/d3.v4.min.js"></script> 
+
+
+<div class="col-sm-3">
+    <table class="table table-bordered " border="1">
+        <tr><td colspan="4">Pairs</td></tr>
+        {% for b in pair %}
+            <tr>
+                <td>{{b}}</td>
+
+            </tr>
+        {% endfor %}</table>
+</div>
+<div>
+	<svg width="960" height="500"></svg>
+<style> /* set the CSS */
+
+	path { 
+	    stroke: blue;
+	    stroke-width: 2;
+	    fill: none;
+	}
+
+	.axis path,
+	.axis line {
+	    fill: none;
+	    stroke: gray;
+	    stroke-width: 1;
+	    shape-rendering: crispEdges;
+	}
+
+</style>
+
+	{% for i in data_new %}
+		<script type="text/javascript">
+
+			var data = {{ i|safe }};
+			console.log(data.price)
+
+
+			var margin = {top: 20, right: 20, bottom: 30, left: 50},
+		    width = 960 - margin.left - margin.right,
+		    height = 500 - margin.top - margin.bottom;
+
+		// parse the date / time
+		var parseTime = d3.timeParse("%y-%d-%m");
+
+		// set the ranges
+		var x = d3.scaleTime().range([0, width]);
+		var y = d3.scaleLinear().range([height, 0]);
+
+		
+		// define the line
+		var valueline = d3.line()
+		    .x(function(d) { return x(d.price); })
+		    .y(function(d) { return y(d.price); });
+
+		// append the svg obgect to the body of the page
+		// appends a 'group' element to 'svg'
+		// moves the 'group' element to the top left margin
+		var svg = d3.select("body").append("svg")
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform",
+		          "translate(" + margin.left + "," + margin.top + ")");
+
+		  data.forEach(function(d) {
+			    d.price = d.price;
+			    d.price = +d.price;
+			  });
+
+
+		  // Add the valueline path.
+		  svg.append("path")
+		  	  .data([data])
+		      .attr("class", "line")
+		      .attr("d", valueline);
+
+		  // Add the X Axis
+		  svg.append("g")
+		      .attr("transform", "translate(0," + height + ")")
+		      .call(d3.axisBottom(x));
+
+		  // Add the Y Axis
+		  svg.append("g")
+		      .call(d3.axisLeft(y));
+				    
+
+		</script>
+	{% endfor %}
+</div>
+
+
+
+<style>
+    .line-chart
+    {
+        border: 1px solid gray;
+    }
+</style>
+
+{% endblock %}
+
