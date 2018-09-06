@@ -38,20 +38,18 @@
 	}
 
 </style>
-
 	{% for i in data_new %}
+
 		<script type="text/javascript">
-
-			var data = {{ i|safe }};
-			console.log(data.price)
-
+			var data_safe = {{ i|safe }};
+			console.log(data_safe)
 
 			var margin = {top: 20, right: 20, bottom: 30, left: 50},
 		    width = 960 - margin.left - margin.right,
 		    height = 500 - margin.top - margin.bottom;
 
 		// parse the date / time
-		var parseTime = d3.timeParse("%y-%d-%m");
+		var parseTime = d3.timeParse("%Y-%m-%d");
 
 		// set the ranges
 		var x = d3.scaleTime().range([0, width]);
@@ -60,7 +58,7 @@
 		
 		// define the line
 		var valueline = d3.line()
-		    .x(function(d) { return x(d.price); })
+		    .x(function(d) { return x(d.date); })
 		    .y(function(d) { return y(d.price); });
 
 		// append the svg obgect to the body of the page
@@ -73,15 +71,21 @@
 		    .attr("transform",
 		          "translate(" + margin.left + "," + margin.top + ")");
 
-		  data.forEach(function(d) {
-			    d.price = d.price;
+		 
+		  	data_safe.forEach(function(d) {
+			    d.date = parseTime(d.date);
 			    d.price = +d.price;
-			  });
+			    console.log(d.date)
+			 });
+
+		  	        x.domain(d3.extent(data_safe, function (d) { return d.date; }));
+        y.domain(d3.extent(data_safe, function (d) { return d.price; }));
+
 
 
 		  // Add the valueline path.
 		  svg.append("path")
-		  	  .data([data])
+		  	  .data([data_safe])
 		      .attr("class", "line")
 		      .attr("d", valueline);
 
@@ -93,7 +97,7 @@
 		  // Add the Y Axis
 		  svg.append("g")
 		      .call(d3.axisLeft(y));
-				    
+		
 
 		</script>
 	{% endfor %}

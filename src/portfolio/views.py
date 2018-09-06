@@ -22,6 +22,7 @@ def pairs(request):
 	if form.is_valid():
 		pairs, data = findPairs(form.cleaned_data)
 		template = 'portfoliohtml/pairsLoad.html'
+		print(data)
 		return render(request, template, {'pair' : pairs, 'data_new' : data})
 
 	template = 'portfoliohtml/pairs.html'
@@ -38,7 +39,6 @@ def findPairs(dictionary):
 
 	c.execute('SELECT stock, close FROM stocks')
 	data = c.fetchall()
-	print(data[1])
 	d = defaultdict(list)
 	for k, v in data:
 		d[k].append(v)
@@ -68,13 +68,16 @@ def findPairs(dictionary):
 		list_of_dict = [{'date': dates, 'price': i} for (dates,i) in zip(dates,i)]
 		new.append(list_of_dict)
 
-	for i in new:
-		
 
+	new = new
+	# jsonArr = []
+	# for i in new:
+	# 	jsonArr.append(json.dumps(i))
 
-	# mae list of jsonarrays
+	# jsonArr = jsonArr[0]
+	# print(jsonArr)
 
-	return pairs, new
+	return pairs,new
 
 	
 
